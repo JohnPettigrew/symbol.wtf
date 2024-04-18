@@ -30,6 +30,11 @@ const symbols = [
         "searchTerms": ["em", "dash"],
     },
     {
+        "glyph": "–",
+        "name": "En-dash",
+        "searchTerms": ["en", "dash"],
+    },
+    {
         "glyph": "£",
         "name": "Pound",
         "searchTerms": ["pound"]
@@ -152,7 +157,22 @@ const symbols = [
     {
         "glyph": "×",
         "name": "Times",
-        "searchTerms": ["times", "x"]
+        "searchTerms": ["times", "x", "multiply"]
+    },
+    {
+        "glyph": "÷",
+        "name": "Division",
+        "searchTerms": ["divide", "division", "/"]
+    },
+    {
+        "glyph": "﹣",
+        "name": "Minus (small)",
+        "searchTerms": ["minus", "subtract", "take away"]
+    },
+    {
+        "glyph": "－",
+        "name": "Minus (large)",
+        "searchTerms": ["minus", "subtract", "take away"]
     },
     {
         "glyph": "",
@@ -166,19 +186,25 @@ const symbols = [
     },
     {
         "glyph": "\u00A0",
-        "display": "\u25A1",
+        "display": false,
+        "name": "Thin space",
+        "searchTerms": ["U+2009", "thin space"]
+    },
+    {
+        "glyph": "\u2009",
+        "display": false,
         "name": "No-break Space",
         "searchTerms": ["U+00A0", "&nbsp;", "non-breaking", "no-break", "break", "space"]
     },
     {
         "glyph": "\u200E",
-        "display": "\u25A1",
+        "display": false,
         "name": "Left-to-Right",
         "searchTerms": ["U+200E", "&lrm;", "ltr", "left-to-right"]
     },
     {
         "glyph": "\u200F",
-        "display": "\u25A1",
+        "display": false,
         "name": "Right-to-Left",
         "searchTerms": ["U+200F", "&rlm;", "rtl", "right-to-left"]
     }
@@ -195,19 +221,20 @@ function renderSymbols(searchTerm = "") {
         }
         const elem = document.createElement("div");
         elem.classList = "symbol";
-        elem.textContent = symbolInfo.display || symbolInfo.glyph;
-        elem.title = symbolInfo.name;
+        /* If display is false, show an empty box. */
+        elem.textContent = symbolInfo.display !== false ? symbolInfo.glyph : "\u25A1";
         elem.addEventListener("click", () => {
             if (elem.classList.contains("symbol-clicked")) return;
 
-            navigator.clipboard.writeText(symbolInfo.glyph);
+            const symbol = elem.textContent;
+            navigator.clipboard.writeText(symbol);
 
             elem.textContent = "Copied!";
             elem.classList.remove("symbol");
             elem.classList.add("symbol-clicked");
 
             setTimeout(() => {
-                elem.textContent = symbolInfo.display || symbolInfo.glyph;
+                elem.textContent = symbolInfo.glyph;
                 elem.title = symbolInfo.name;
                 elem.classList.remove("symbol-clicked");
                 elem.classList.add("symbol");
